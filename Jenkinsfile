@@ -4,14 +4,14 @@ pipeline {
     stages {
         stage('Checkout Code') {
             steps {
-                echo 'Checking out source code...'
+                echo 'Using the project files available to Jenkins workspace'
             }
         }
 
         stage('Build & Start Staging Environment') {
             steps {
-                echo 'Building and starting containers...'
-                sh 'docker compose -p cozy-catalog up -d --build --force-recreate --remove-orphans'
+                echo 'Building and starting application containers...'
+                sh 'docker compose -p cozy-catalog up -d --build --force-recreate --remove-orphans db backend frontend'
             }
         }
 
