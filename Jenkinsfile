@@ -25,17 +25,18 @@ pipeline {
         stage('Deploy Local Staging') {
             steps {
                 echo 'Deploying updated containers locally...'
-                sh 'docker compose up -d'
+                // Forces Docker Compose to recreate existing containers
+                sh 'docker compose up -d --force-recreate --remove-orphans'
             }
         }
     }
 
     post {
         success {
-            echo 'Pipeline executed successfully!'
+            echo 'Pipeline executed successfully! Staging application updated.'
         }
         failure {
-            echo 'Pipeline failed. Check container logs.'
+            echo 'Pipeline build or deployment failed.'
         }
     }
 }
