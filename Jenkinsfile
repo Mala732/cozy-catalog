@@ -18,15 +18,14 @@ pipeline {
         stage('Build Container Images') {
             steps {
                 echo 'Building fresh Docker images...'
-                sh 'docker compose build'
+                sh 'docker compose -p cozy-catalog build'
             }
         }
 
         stage('Deploy Local Staging') {
             steps {
                 echo 'Deploying updated containers locally...'
-                // Forces Docker Compose to recreate existing containers
-                sh 'docker compose up -d --force-recreate --remove-orphans'
+                sh 'docker compose -p cozy-catalog up -d --force-recreate --remove-orphans'
             }
         }
     }
