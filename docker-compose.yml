@@ -36,14 +36,15 @@ services:
       - backend
 
   # 4. Jenkins Automation Server
+ 
   jenkins:
-    image: jenkins/jenkins:lts-jdk17
+    build: ./jenkins
     container_name: cozy_jenkins
-    restart: always
+    restart: unless-stopped
     user: root
     ports:
-      - "8082:8080"      # Jenkins Web UI Dashboard
-      - "50000:50000"    # Jenkins Agent Port
+      - "8082:8080"
+      - "50000:50000"
     volumes:
       - jenkins_data:/var/jenkins_home
       - /var/run/docker.sock:/var/run/docker.sock
