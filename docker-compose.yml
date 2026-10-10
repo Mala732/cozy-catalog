@@ -13,7 +13,7 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
-# 2. Python FastAPI Backend API
+  # 2. Python FastAPI Backend API
   backend:
     build: ./backend
     container_name: cozy_backend
@@ -25,15 +25,31 @@ services:
     depends_on:
       - db
 
-# 3. Static Web Frontend
+  # 3. Static Web Frontend
   frontend:
     build: ./frontend
     container_name: cozy_frontend
     restart: always
     ports:
-      - "8081:80"  # Changed from 8080:80 to 8081:80
+      - "8081:80"
+    depends_on:
+      - backend
+
+  # 4. Jenkins Automation Server
+  jenkins:
+    image: jenkins/jenkins:lts-jdk17
+    container_name: cozy_jenkins
+    restart: always
+    user: root
+    ports:
+      - "8082:8080"      # Jenkins Web UI Dashboard
+      - "50000:50000"    # Jenkins Agent Port
+    volumes:
+      - jenkins_data:/var/jenkins_home
+      - /var/run/docker.sock:/var/run/docker.sock
     depends_on:
       - backend
 
 volumes:
   postgres_data:
+  jenkins_data:
