@@ -8,34 +8,27 @@ pipeline {
             }
         }
 
+        stage('Build & Start Staging Environment') {
+            steps {
+                echo 'Building and starting containers...'
+                sh 'docker compose -p cozy-catalog up -d --build --force-recreate --remove-orphans'
+            }
+        }
+
         stage('Backend Unit Tests') {
             steps {
-                echo 'Running Python unit tests...'
+                echo 'Running Python unit tests inside backend container...'
                 sh 'docker exec cozy_backend python -m unittest discover -s app'
-            }
-        }
-
-        stage('Build Container Images') {
-            steps {
-                echo 'Building fresh Docker images...'
-                sh 'docker compose -p cozy-catalog build'
-            }
-        }
-
-        stage('Deploy Local Staging') {
-            steps {
-                echo 'Deploying updated containers locally...'
-                sh 'docker compose -p cozy-catalog up -d --force-recreate --remove-orphans'
             }
         }
     }
 
     post {
         success {
-            echo 'Pipeline executed successfully! Staging application updated.'
+            echo 'Pipeline executed successfully! Staging environment is live and tested.'
         }
         failure {
-            echo 'Pipeline build or deployment failed.'
+            echo 'Pipeline failed. Check build or test logs.'
         }
     }
 }
