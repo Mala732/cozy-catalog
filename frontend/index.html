@@ -1,207 +1,682 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Cozy Corner | Product Catalog</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#111a2e">
+  <title>Zolis Digital Print | Discover Something Extraordinary</title>
 
-  <!-- Google Fonts: Playfair Display (Headings) & Plus Jakarta Sans (Body) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;1,400&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 
   <style>
-    /* Cozy Color Palette */
     :root {
-      --bg-color: #faf7f2;          /* Soft Cream */
-      --card-bg: #ffffff;           /* Crisp White */
-      --text-main: #3a332c;         /* Warm Dark Espresso */
-      --text-muted: #80756b;        /* Soft Taupe */
-      --accent-color: #c87d55;      /* Terracotta Warmth */
-      --accent-hover: #b36b44;      /* Deep Terracotta */
-      --border-color: #eee7dd;      /* Gentle Beige Line */
-      --shadow-sm: 0 4px 12px rgba(58, 51, 44, 0.05);
-      --shadow-hover: 0 10px 24px rgba(58, 51, 44, 0.09);
+      --navy: #111a2e;
+      --navy-light: #202d46;
+      --burgundy: #58283a;
+      --gold: #d8b66a;
+      --gold-light: #f0dca1;
+      --parchment: #f5eedf;
+      --paper: #fffaf0;
+      --ink: #252a35;
+      --muted: #77716a;
+      --border: #e3d8c5;
     }
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
+    * { box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
 
     body {
-      background-color: var(--bg-color);
-      color: var(--text-main);
-      font-family: 'Plus Jakarta Sans', sans-serif;
+      margin: 0;
+      color: var(--ink);
+      background: var(--parchment);
+      font-family: "DM Sans", sans-serif;
       line-height: 1.6;
-      padding: 20px;
-      min-height: 100vh;
     }
 
-    /* Container */
-    .container {
-      max-width: 1100px;
-      margin: 0 auto;
-      padding: 20px 10px;
-    }
+    a { color: inherit; }
+    button, input, select { font: inherit; }
 
-    /* Header Styling */
-    header {
-      text-align: center;
-      margin-bottom: 40px;
-    }
-
-    header h1 {
-      font-family: 'Playfair Display', serif;
-      font-size: 2.5rem;
-      font-weight: 600;
-      color: var(--text-main);
-      margin-bottom: 8px;
-    }
-
-    header p {
-      color: var(--text-muted);
-      font-size: 1.05rem;
-      font-style: italic;
-      font-family: 'Playfair Display', serif;
-    }
-
-    /* Catalog Grid Layout */
-    .catalog-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-      gap: 30px;
-    }
-
-    /* Product Card Styling */
-    .product-card {
-      background: var(--card-bg);
-      border-radius: 16px;
-      border: 1px solid var(--border-color);
-      overflow: hidden;
-      box-shadow: var(--shadow-sm);
-      transition: transform 0.25s ease, box-shadow 0.25s ease;
+    .sidebar {
+      position: fixed;
+      inset: 0 auto 0 0;
+      z-index: 20;
+      width: 255px;
+      padding: 26px 18px;
       display: flex;
       flex-direction: column;
+      color: #f9f2e4;
+      background:
+        radial-gradient(ellipse at top left, #d8b66a20, transparent 45%),
+        var(--navy);
+      border-right: 1px solid #d8b66a55;
+      transition: transform .25s ease;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 30px;
+      padding: 0 8px;
+      text-decoration: none;
+    }
+
+    .brand-mark {
+      width: 44px;
+      height: 44px;
+      display: grid;
+      place-items: center;
+      border: 1px solid var(--gold);
+      border-radius: 50%;
+      color: var(--gold-light);
+      font: 700 27px "Cormorant Garamond", serif;
+    }
+
+    .brand-name {
+      font: 700 25px "Cormorant Garamond", serif;
+      line-height: 1;
+    }
+
+    .brand-sub {
+      display: block;
+      margin-top: 6px;
+      color: #b8bdc8;
+      font-size: 9px;
+      letter-spacing: 1.8px;
+      text-transform: uppercase;
+    }
+
+    .nav-label {
+      padding: 8px 12px;
+      color: #9fa8b8;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    .nav-link, .accordion-toggle {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      width: 100%;
+      margin: 3px 0;
+      padding: 11px 13px;
+      border: 0;
+      border-radius: 8px;
+      color: #e5e5e8;
+      background: transparent;
+      text-align: left;
+      text-decoration: none;
+      cursor: pointer;
+      font-size: 13px;
+    }
+
+    .nav-link:hover, .accordion-toggle:hover,
+    .nav-link.active {
+      color: var(--gold-light);
+      background: #ffffff12;
+    }
+
+    .nav-icon { width: 18px; color: var(--gold); text-align: center; }
+
+    .chevron {
+      margin-left: auto;
+      transition: transform .2s;
+    }
+
+    .accordion-toggle[aria-expanded="false"] .chevron {
+      transform: rotate(-90deg);
+    }
+
+    .category-list { padding-left: 42px; }
+    .category-list[hidden] { display: none; }
+
+    .category-button {
+      display: block;
+      width: 100%;
+      padding: 7px 9px;
+      border: 0;
+      border-left: 1px solid #48516a;
+      color: #bdc2cc;
+      background: transparent;
+      text-align: left;
+      cursor: pointer;
+      font-size: 12px;
+    }
+
+    .category-button:hover,
+    .category-button.selected {
+      border-left: 2px solid var(--gold);
+      color: var(--gold-light);
+    }
+
+    .sidebar-bottom {
+      margin-top: auto;
+      padding: 18px 12px 0;
+      border-top: 1px solid #ffffff1c;
+    }
+
+    .sidebar-quote {
+      color: #e8d9b4;
+      font: italic 17px "Cormorant Garamond", serif;
+    }
+
+    .sidebar-caption {
+      margin-top: 9px;
+      color: #8f9aab;
+      font-size: 9px;
+      letter-spacing: 1px;
+    }
+
+    .main { min-height: 100vh; margin-left: 255px; }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 15px;
+      padding: 14px clamp(20px, 4vw, 52px);
+      background: #f5eedfee;
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid #58283a15;
+    }
+
+    .breadcrumbs { color: var(--muted); font-size: 12px; }
+    .breadcrumbs strong { color: var(--burgundy); }
+
+    .top-links { display: flex; gap: 20px; }
+    .top-links a {
+      color: #4e4b49;
+      font-size: 12px;
+      font-weight: 600;
+      text-decoration: none;
+    }
+    .top-links a:hover { color: var(--burgundy); }
+
+    .mobile-menu {
+      display: none;
+      padding: 7px 10px;
+      border: 1px solid var(--border);
+      border-radius: 7px;
+      color: var(--navy);
+      background: transparent;
+      cursor: pointer;
+    }
+
+    .content {
+      max-width: 1450px;
+      margin: 0 auto;
+      padding: 32px clamp(20px, 4vw, 52px) 55px;
+    }
+
+    .hero {
+      position: relative;
+      overflow: hidden;
+      padding: clamp(30px, 5vw, 56px);
+      color: #fff8e8;
+      background:
+        radial-gradient(circle at 85% 20%, #d8b66a30, transparent 24%),
+        radial-gradient(circle at 80% 100%, #58283a, transparent 45%),
+        linear-gradient(120deg, var(--navy), var(--navy-light));
+      border: 1px solid #d8b66a66;
+      border-radius: 16px;
+      box-shadow: 0 16px 40px #070c181c;
+    }
+
+    .hero::after {
+      content: "✦  ·  ✧  ·  ✦";
+      position: absolute;
+      top: 18%;
+      right: 6%;
+      color: #f0dca155;
+      font-size: clamp(22px, 3vw, 38px);
+      letter-spacing: 9px;
+    }
+
+    .eyebrow {
+      color: var(--gold-light);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+    }
+
+    .hero h1 {
+      position: relative;
+      z-index: 1;
+      max-width: 680px;
+      margin: 13px 0;
+      font: 600 clamp(42px, 5vw, 66px)/.98 "Cormorant Garamond", serif;
+    }
+
+    .hero p {
+      position: relative;
+      z-index: 1;
+      max-width: 540px;
+      color: #d9dce4;
+      font-size: 14px;
+    }
+
+    .hero-actions {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 25px;
+    }
+
+    .button {
+      display: inline-flex;
+      justify-content: center;
+      padding: 11px 16px;
+      border: 1px solid var(--gold-light);
+      border-radius: 7px;
+      font-size: 12px;
+      font-weight: 700;
+      text-decoration: none;
+      transition: transform .2s;
+    }
+
+    .button:hover { transform: translateY(-2px); }
+    .button-primary { color: var(--navy); background: var(--gold-light); }
+    .button-secondary { color: white; border-color: #ffffff66; }
+
+    .section-heading {
+      display: flex;
+      justify-content: space-between;
+      align-items: end;
+      gap: 15px;
+      margin: 38px 0 18px;
+    }
+
+    .section-heading h2 {
+      margin: 0;
+      color: var(--navy);
+      font: 600 35px/1.1 "Cormorant Garamond", serif;
+    }
+
+    .section-heading p { margin: 6px 0 0; color: var(--muted); font-size: 12px; }
+    .results-count { color: var(--muted); font-size: 12px; white-space: nowrap; }
+
+    .toolbar { display: flex; gap: 12px; margin-bottom: 20px; }
+    .search-wrap { position: relative; flex: 1; }
+
+    .search-wrap span {
+      position: absolute;
+      top: 50%;
+      left: 14px;
+      transform: translateY(-50%);
+      color: #8b8377;
+    }
+
+    .search-input, .sort-select {
+      min-height: 46px;
+      padding: 10px 13px;
+      border: 1px solid #ded2bd;
+      border-radius: 8px;
+      outline: none;
+      color: var(--ink);
+      background: var(--paper);
+    }
+
+    .search-input { width: 100%; padding-left: 40px; }
+    .search-input:focus, .sort-select:focus {
+      border-color: #9a7440;
+      box-shadow: 0 0 0 3px #d8b66a33;
+    }
+
+    .sort-select { min-width: 150px; }
+
+    .active-filter {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 16px;
+      padding: 5px 10px;
+      border: 1px solid #dfcfac;
+      border-radius: 99px;
+      color: #684a22;
+      background: #f9f0d9;
+      font-size: 11px;
+    }
+
+    .active-filter[hidden] { display: none; }
+    .active-filter button { border: 0; background: transparent; cursor: pointer; }
+
+    .catalog-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 19px;
+    }
+
+    .product-card {
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      min-width: 0;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: var(--paper);
+      box-shadow: 0 5px 18px #2019120b;
+      transition: transform .2s, box-shadow .2s, border-color .2s;
     }
 
     .product-card:hover {
-      transform: translateY(-5px);
-      box-shadow: var(--shadow-hover);
+      transform: translateY(-4px);
+      border-color: #c9ac6b;
+      box-shadow: 0 15px 30px #20191219;
     }
 
-    .card-image-wrapper {
-      width: 100%;
-      height: 240px;
-      background-color: #f3ede4;
+    .card-image {
+      display: grid;
+      place-items: center;
+      height: 200px;
       overflow: hidden;
-      position: relative;
+      color: #8a7754;
+      background: #e7ddcb;
+      font: 22px "Cormorant Garamond", serif;
     }
 
-    .card-image-wrapper img {
+    .card-image img {
       width: 100%;
       height: 100%;
       object-fit: cover;
-      transition: transform 0.4s ease;
-    }
-
-    .product-card:hover .card-image-wrapper img {
-      transform: scale(1.04);
     }
 
     .card-body {
-      padding: 20px;
       display: flex;
+      flex: 1;
       flex-direction: column;
-      flex-grow: 1;
+      padding: 16px;
     }
 
     .card-category {
-      font-size: 0.75rem;
+      margin-bottom: 5px;
+      color: #8b6630;
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
       text-transform: uppercase;
-      letter-spacing: 1.2px;
-      color: var(--accent-color);
-      font-weight: 600;
-      margin-bottom: 6px;
     }
 
     .card-title {
-      font-family: 'Playfair Display', serif;
-      font-size: 1.35rem;
-      font-weight: 600;
-      color: var(--text-main);
-      margin-bottom: 8px;
-      line-height: 1.3;
+      margin: 0 0 7px;
+      color: var(--navy);
+      font: 600 24px/1.1 "Cormorant Garamond", serif;
     }
 
-    .card-description {
-      font-size: 0.9rem;
-      color: var(--text-muted);
-      margin-bottom: 16px;
-      flex-grow: 1;
-    }
+    .card-description { flex: 1; margin: 0 0 16px; color: var(--muted); font-size: 12px; }
 
     .card-footer {
       display: flex;
-      align-items: center;
       justify-content: space-between;
-      padding-top: 12px;
-      border-top: 1px solid var(--border-color);
-    }
-
-    .card-price {
-      font-size: 1.2rem;
-      font-weight: 600;
-      color: var(--text-main);
-    }
-
-    /* Share Button */
-    .share-btn {
-      background-color: transparent;
-      border: 1px solid var(--accent-color);
-      color: var(--accent-color);
-      padding: 6px 14px;
-      border-radius: 20px;
-      font-size: 0.82rem;
-      font-weight: 500;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      display: inline-flex;
       align-items: center;
-      gap: 6px;
+      gap: 10px;
+      padding-top: 12px;
+      border-top: 1px solid #e9dfcf;
     }
 
-    .share-btn:hover {
-      background-color: var(--accent-color);
-      color: #ffffff;
+    .card-price { color: var(--burgundy); font-size: 14px; font-weight: 700; }
+
+    .inquire-btn {
+      padding: 7px 11px;
+      border: 1px solid var(--burgundy);
+      border-radius: 6px;
+      color: var(--burgundy);
+      font-size: 11px;
+      font-weight: 700;
+      text-decoration: none;
     }
 
-    /* Loading / Error States */
+    .inquire-btn:hover { color: white; background: var(--burgundy); }
+
     .status-msg {
-      text-align: center;
       grid-column: 1 / -1;
-      padding: 60px 20px;
-      color: var(--text-muted);
-      font-family: 'Playfair Display', serif;
-      font-size: 1.2rem;
+      padding: 35px 20px;
+      border: 1px dashed #d8c9af;
+      border-radius: 10px;
+      color: var(--muted);
+      background: #fffaf099;
+      text-align: center;
+    }
+
+    .contact-panel {
+      display: grid;
+      grid-template-columns: 1.4fr 1fr;
+      align-items: center;
+      gap: 25px;
+      margin-top: 45px;
+      padding: 28px;
+      border-radius: 13px;
+      color: #f9f2e4;
+      background: var(--burgundy);
+    }
+
+    .contact-panel h2 {
+      margin: 5px 0 8px;
+      font: 600 33px/1.1 "Cormorant Garamond", serif;
+    }
+
+    .contact-panel p { margin: 0; color: #e2d5d5; font-size: 12px; }
+    .contact-action { justify-self: end; }
+
+    footer {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      margin-top: 25px;
+      padding-top: 17px;
+      border-top: 1px solid #dfd3c0;
+      color: #82796e;
+      font-size: 10px;
+    }
+
+    .scrim { display: none; }
+
+    @media (max-width: 1100px) {
+      .catalog-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+
+    @media (max-width: 760px) {
+      .sidebar { transform: translateX(-100%); width: 270px; }
+      .sidebar.open { transform: translateX(0); }
+
+      .scrim.show {
+        display: block;
+        position: fixed;
+        inset: 0;
+        z-index: 15;
+        background: #080c1690;
+      }
+
+      .main { margin-left: 0; }
+      .mobile-menu { display: inline-flex; align-items: center; gap: 7px; }
+      .topbar { padding: 12px 16px; }
+      .breadcrumbs { display: none; }
+      .top-links { gap: 12px; }
+      .top-links a { font-size: 11px; }
+      .content { padding: 20px 16px 40px; }
+      .hero { padding: 30px 23px; }
+      .hero::after { right: -4%; top: 8%; }
+      .hero p { max-width: 92%; }
+      .catalog-grid { gap: 12px; }
+      .card-image { height: 155px; }
+      .card-body { padding: 12px; }
+      .card-title { font-size: 21px; }
+      .card-description { font-size: 11px; }
+      .card-footer { align-items: flex-start; flex-direction: column; }
+      .inquire-btn { width: 100%; text-align: center; }
+      .contact-panel { grid-template-columns: 1fr; padding: 23px; }
+      .contact-action { justify-self: start; }
+    }
+
+    @media (max-width: 420px) {
+      .catalog-grid { grid-template-columns: 1fr; }
+      .card-image { height: 205px; }
+      .toolbar { flex-direction: column; }
+      .sort-select { width: 100%; }
+      .section-heading h2 { font-size: 30px; }
+      footer { flex-direction: column; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        scroll-behavior: auto !important;
+        transition: none !important;
+      }
     }
   </style>
 </head>
-<body>
 
-  <div class="container">
-    <header>
-      <h1>Cozy Corner</h1>
-      <p>Handcrafted items made with love and warmth</p>
+<body>
+  <aside class="sidebar" id="sidebar" aria-label="Main navigation">
+    <a class="brand" href="#home">
+      <span class="brand-mark">Z</span>
+      <span>
+        <span class="brand-name">Zolis Digital Print</span>
+        <span class="brand-sub">Digital Printing Solutions</span>
+      </span>
+    </a>
+
+    <div class="nav-label">Explore</div>
+    <a class="nav-link active" href="#home"><span class="nav-icon">✧</span> Home</a>
+    <a class="nav-link" href="#catalog"><span class="nav-icon">▤</span> All Catalog</a>
+
+    <button class="accordion-toggle" id="categoryToggle" aria-expanded="true" aria-controls="categoryList">
+      <span class="nav-icon">✦</span>
+      Browse categories
+      <span class="chevron">⌄</span>
+    </button>
+
+    <div class="category-list" id="categoryList">
+      <button class="category-button selected" type="button" data-category="all">All treasures</button>
+      <div id="categoryOptions"></div>
+    </div>
+
+    <a class="nav-link" href="#contact"><span class="nav-icon">✉</span> Contact us</a>
+
+    <div class="sidebar-bottom">
+      <div class="sidebar-quote">“It is our choices that show what we truly are.”</div>
+      <div class="sidebar-caption">A LITTLE MAGIC IN EVERY DETAIL</div>
+    </div>
+  </aside>
+
+  <div class="scrim" id="scrim"></div>
+
+  <main class="main" id="home">
+    <header class="topbar">
+      <button class="mobile-menu" id="menuToggle" aria-expanded="false" aria-controls="sidebar">☰ Menu</button>
+      <div class="breadcrumbs">Zolis Digital Print / <strong id="breadcrumbCurrent">Home</strong></div>
+      <nav class="top-links" aria-label="Quick links">
+        <a href="#catalog">Catalog</a>
+        <a href="#contact">Contact</a>
+      </nav>
     </header>
 
-    <main>
-      <div id="catalog-grid" class="catalog-grid">
-        <div class="status-msg">Gathering catalog items...</div>
-      </div>
-    </main>
+    <div class="content">
+      <section class="hero">
+        <div class="eyebrow">A curious little collection</div>
+        <h1>Find something<br>extraordinary.</h1>
+        <p>Discover a curated selection of digital prints and stationery that bring creativity to life.</p>
+        <div class="hero-actions">
+          <a class="button button-primary" href="#catalog">Explore the catalog ↗</a>
+          <a class="button button-secondary" href="#contact">Ask us a question</a>
+        </div>
+      </section>
+
+      <section id="catalog" aria-labelledby="catalogTitle">
+        <div class="section-heading">
+          <div>
+            <h2 id="catalogTitle">The collection</h2>
+            <p>Every item has a story. Find the one that speaks to you.</p>
+          </div>
+          <div class="results-count" id="resultsCount" aria-live="polite">Loading…</div>
+        </div>
+
+        <div class="toolbar">
+          <label class="search-wrap">
+            <span>⌕</span>
+            <input class="search-input" id="searchInput" type="search" placeholder="Search the collection…" aria-label="Search catalog">
+          </label>
+          <select class="sort-select" id="sortSelect" aria-label="Sort catalog">
+            <option value="featured">Sort: Featured</option>
+            <option value="title-asc">Name: A to Z</option>
+            <option value="price-asc">Price: Low to high</option>
+            <option value="price-desc">Price: High to low</option>
+          </select>
+        </div>
+
+        <div class="active-filter" id="activeFilter" hidden>
+          <span id="activeFilterLabel"></span>
+          <button id="clearFilter" type="button" aria-label="Clear category filter">×</button>
+        </div>
+
+        <div class="catalog-grid" id="catalog-grid">
+          <div class="status-msg">Opening the catalog…</div>
+        </div>
+      </section>
+
+
+<section id="contact" aria-labelledby="contact-heading"
+  style="padding: 48px 24px; background: #fffaf0; color: #252a35; border-radius: 12px; margin: 32px 0;">
+  <p style="color: #77716a; letter-spacing: 2px; text-transform: uppercase;">
+    Get in touch
+  </p>
+
+  <h2 id="contact-heading" style="color: #111a2e;">
+    Contact Zolis Digital Print
+  </h2>
+
+  <p>
+    Looking for wedding invitations, stickers, laser printing, or custom
+    print work? Contact us to discuss your requirements and get a quote.
+  </p>
+
+  <div style="display: grid; gap: 18px; margin-top: 24px;">
+    <div>
+      <strong>Phone</strong>
+      <p>+91 00000 00000 (placeholder)</p>
+    </div>
+
+    <div>
+      <strong>WhatsApp</strong>
+      <p>Message us about a product or request a quote.</p>
+      <a href="https://wa.me/910000000000"
+         target="_blank"
+         rel="noopener noreferrer">
+        Contact us on WhatsApp
+      </a>
+      <p style="font-size: 12px; color: #77716a;">
+        Placeholder link — replace it with your real business WhatsApp number.
+      </p>
+    </div>
+
+    <div>
+      <strong>Address</strong>
+      <p>Replace with your shop address and locality.</p>
+    </div>
+
+    <div>
+      <strong>Opening hours</strong>
+      <p>Monday–Saturday: 9:00 AM–6:00 PM (placeholder)</p>
+    </div>
   </div>
+</section>
+
+      <footer>
+        <span>© <span id="year"></span> Cozy Corner. Made with care.</span>
+        <span>A warm welcome, a touch of wonder.</span>
+      </footer>
+    </div>
+  </main>
 
   <script src="app.js"></script>
 </body>
