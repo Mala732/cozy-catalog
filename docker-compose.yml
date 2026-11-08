@@ -1,62 +1,56 @@
 services:
+
   db:
     image: postgres:15-alpine
-    container_name: cozy_db
-    restart: always
+    container_name: deploylab_db
+    restart: unless-stopped
+
     environment:
       POSTGRES_USER: ${POSTGRES_USER:?Set POSTGRES_USER in .env}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env}
       POSTGRES_DB: ${POSTGRES_DB:?Set POSTGRES_DB in .env}
-    ports:
-      - "5432:5432"
+
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"
+        ]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+
   backend:
     build: ./backend
-    container_name: cozy_backend
-    restart: always
-    ports:
-      - "8000:8000"
+    container_name: deploylab_backend
+    restart: unless-stopped
+
     environment:
       DATABASE_URL: postgresql+psycopg2://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}
-      ADMIN_USERNAME: ${ADMIN_USERNAME}
-      ADMIN_PASSWORD_HASH: ${ADMIN_PASSWORD_HASH}
-      JWT_SECRET_KEY: ${JWT_SECRET_KEY}
-      FRONTEND_ORIGINS: ${FRONTEND_ORIGINS}
-      UPLOAD_DIR: /app/uploads
-    volumes:
-      - product_uploads:/app/uploads
-    depends_on:
-      - db
+      DEPLOY_VERSION: ${DEPLOY_VERSION:-local}
+      DEPLOY_ENVIRONMENT: ${DEPLOY_ENVIRONMENT:-local}
+      DEPLOY_PLATFORM: ${DEPLOY_PLATFORM:-Docker}
 
-  # 3. Static Web Frontend
+    depends_on:
+      db:
+        condition: service_healthy
+
+
   frontend:
     build: ./frontend
-    container_name: cozy_frontend
-    restart: always
+    container_name: deploylab_frontend
+    restart: unless-stopped
+
     ports:
-      - "8081:80"
+      - "8080:80"
+
     depends_on:
       - backend
 
-  # 4. Jenkins Automation Server
- 
-  jenkins:
-    build: ./jenkins
-    container_name: cozy_jenkins
-    restart: unless-stopped
-    user: root
-    ports:
-      - "8082:8080"
-      - "50000:50000"
-    volumes:
-      - jenkins_data:/var/jenkins_home
-      - /var/run/docker.sock:/var/run/docker.sock
-    depends_on:
-      - backend
 
 volumes:
   postgres_data:
-  jenkins_data:
-  product_uploads:

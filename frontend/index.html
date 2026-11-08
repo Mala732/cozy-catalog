@@ -1,683 +1,426 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#111a2e">
-  <title>Zolis Digital Print | Discover Something Extraordinary</title>
-
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-
-  <style>
-    :root {
-      --navy: #111a2e;
-      --navy-light: #202d46;
-      --burgundy: #58283a;
-      --gold: #d8b66a;
-      --gold-light: #f0dca1;
-      --parchment: #f5eedf;
-      --paper: #fffaf0;
-      --ink: #252a35;
-      --muted: #77716a;
-      --border: #e3d8c5;
-    }
-
-    * { box-sizing: border-box; }
-
-    html { scroll-behavior: smooth; }
-
-    body {
-      margin: 0;
-      color: var(--ink);
-      background: var(--parchment);
-      font-family: "DM Sans", sans-serif;
-      line-height: 1.6;
-    }
-
-    a { color: inherit; }
-    button, input, select { font: inherit; }
-
-    .sidebar {
-      position: fixed;
-      inset: 0 auto 0 0;
-      z-index: 20;
-      width: 255px;
-      padding: 26px 18px;
-      display: flex;
-      flex-direction: column;
-      color: #f9f2e4;
-      background:
-        radial-gradient(ellipse at top left, #d8b66a20, transparent 45%),
-        var(--navy);
-      border-right: 1px solid #d8b66a55;
-      transition: transform .25s ease;
-    }
-
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      margin-bottom: 30px;
-      padding: 0 8px;
-      text-decoration: none;
-    }
-
-    .brand-mark {
-      width: 44px;
-      height: 44px;
-      display: grid;
-      place-items: center;
-      border: 1px solid var(--gold);
-      border-radius: 50%;
-      color: var(--gold-light);
-      font: 700 27px "Cormorant Garamond", serif;
-    }
-
-    .brand-name {
-      font: 700 25px "Cormorant Garamond", serif;
-      line-height: 1;
-    }
-
-    .brand-sub {
-      display: block;
-      margin-top: 6px;
-      color: #b8bdc8;
-      font-size: 9px;
-      letter-spacing: 1.8px;
-      text-transform: uppercase;
-    }
-
-    .nav-label {
-      padding: 8px 12px;
-      color: #9fa8b8;
-      font-size: 10px;
-      font-weight: 700;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-    }
-
-    .nav-link, .accordion-toggle {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      width: 100%;
-      margin: 3px 0;
-      padding: 11px 13px;
-      border: 0;
-      border-radius: 8px;
-      color: #e5e5e8;
-      background: transparent;
-      text-align: left;
-      text-decoration: none;
-      cursor: pointer;
-      font-size: 13px;
-    }
-
-    .nav-link:hover, .accordion-toggle:hover,
-    .nav-link.active {
-      color: var(--gold-light);
-      background: #ffffff12;
-    }
-
-    .nav-icon { width: 18px; color: var(--gold); text-align: center; }
-
-    .chevron {
-      margin-left: auto;
-      transition: transform .2s;
-    }
-
-    .accordion-toggle[aria-expanded="false"] .chevron {
-      transform: rotate(-90deg);
-    }
-
-    .category-list { padding-left: 42px; }
-    .category-list[hidden] { display: none; }
-
-    .category-button {
-      display: block;
-      width: 100%;
-      padding: 7px 9px;
-      border: 0;
-      border-left: 1px solid #48516a;
-      color: #bdc2cc;
-      background: transparent;
-      text-align: left;
-      cursor: pointer;
-      font-size: 12px;
-    }
-
-    .category-button:hover,
-    .category-button.selected {
-      border-left: 2px solid var(--gold);
-      color: var(--gold-light);
-    }
-
-    .sidebar-bottom {
-      margin-top: auto;
-      padding: 18px 12px 0;
-      border-top: 1px solid #ffffff1c;
-    }
-
-    .sidebar-quote {
-      color: #e8d9b4;
-      font: italic 17px "Cormorant Garamond", serif;
-    }
-
-    .sidebar-caption {
-      margin-top: 9px;
-      color: #8f9aab;
-      font-size: 9px;
-      letter-spacing: 1px;
-    }
-
-    .main { min-height: 100vh; margin-left: 255px; }
-
-    .topbar {
-      position: sticky;
-      top: 0;
-      z-index: 10;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 15px;
-      padding: 14px clamp(20px, 4vw, 52px);
-      background: #f5eedfee;
-      backdrop-filter: blur(12px);
-      border-bottom: 1px solid #58283a15;
-    }
-
-    .breadcrumbs { color: var(--muted); font-size: 12px; }
-    .breadcrumbs strong { color: var(--burgundy); }
-
-    .top-links { display: flex; gap: 20px; }
-    .top-links a {
-      color: #4e4b49;
-      font-size: 12px;
-      font-weight: 600;
-      text-decoration: none;
-    }
-    .top-links a:hover { color: var(--burgundy); }
-
-    .mobile-menu {
-      display: none;
-      padding: 7px 10px;
-      border: 1px solid var(--border);
-      border-radius: 7px;
-      color: var(--navy);
-      background: transparent;
-      cursor: pointer;
-    }
-
-    .content {
-      max-width: 1450px;
-      margin: 0 auto;
-      padding: 32px clamp(20px, 4vw, 52px) 55px;
-    }
-
-    .hero {
-      position: relative;
-      overflow: hidden;
-      padding: clamp(30px, 5vw, 56px);
-      color: #fff8e8;
-      background:
-        radial-gradient(circle at 85% 20%, #d8b66a30, transparent 24%),
-        radial-gradient(circle at 80% 100%, #58283a, transparent 45%),
-        linear-gradient(120deg, var(--navy), var(--navy-light));
-      border: 1px solid #d8b66a66;
-      border-radius: 16px;
-      box-shadow: 0 16px 40px #070c181c;
-    }
-
-    .hero::after {
-      content: "✦  ·  ✧  ·  ✦";
-      position: absolute;
-      top: 18%;
-      right: 6%;
-      color: #f0dca155;
-      font-size: clamp(22px, 3vw, 38px);
-      letter-spacing: 9px;
-    }
-
-    .eyebrow {
-      color: var(--gold-light);
-      font-size: 10px;
-      font-weight: 700;
-      letter-spacing: 3px;
-      text-transform: uppercase;
-    }
-
-    .hero h1 {
-      position: relative;
-      z-index: 1;
-      max-width: 680px;
-      margin: 13px 0;
-      font: 600 clamp(42px, 5vw, 66px)/.98 "Cormorant Garamond", serif;
-    }
-
-    .hero p {
-      position: relative;
-      z-index: 1;
-      max-width: 540px;
-      color: #d9dce4;
-      font-size: 14px;
-    }
-
-    .hero-actions {
-      position: relative;
-      z-index: 1;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 12px;
-      margin-top: 25px;
-    }
-
-    .button {
-      display: inline-flex;
-      justify-content: center;
-      padding: 11px 16px;
-      border: 1px solid var(--gold-light);
-      border-radius: 7px;
-      font-size: 12px;
-      font-weight: 700;
-      text-decoration: none;
-      transition: transform .2s;
-    }
-
-    .button:hover { transform: translateY(-2px); }
-    .button-primary { color: var(--navy); background: var(--gold-light); }
-    .button-secondary { color: white; border-color: #ffffff66; }
-
-    .section-heading {
-      display: flex;
-      justify-content: space-between;
-      align-items: end;
-      gap: 15px;
-      margin: 38px 0 18px;
-    }
-
-    .section-heading h2 {
-      margin: 0;
-      color: var(--navy);
-      font: 600 35px/1.1 "Cormorant Garamond", serif;
-    }
-
-    .section-heading p { margin: 6px 0 0; color: var(--muted); font-size: 12px; }
-    .results-count { color: var(--muted); font-size: 12px; white-space: nowrap; }
-
-    .toolbar { display: flex; gap: 12px; margin-bottom: 20px; }
-    .search-wrap { position: relative; flex: 1; }
-
-    .search-wrap span {
-      position: absolute;
-      top: 50%;
-      left: 14px;
-      transform: translateY(-50%);
-      color: #8b8377;
-    }
-
-    .search-input, .sort-select {
-      min-height: 46px;
-      padding: 10px 13px;
-      border: 1px solid #ded2bd;
-      border-radius: 8px;
-      outline: none;
-      color: var(--ink);
-      background: var(--paper);
-    }
-
-    .search-input { width: 100%; padding-left: 40px; }
-    .search-input:focus, .sort-select:focus {
-      border-color: #9a7440;
-      box-shadow: 0 0 0 3px #d8b66a33;
-    }
-
-    .sort-select { min-width: 150px; }
-
-    .active-filter {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      margin-bottom: 16px;
-      padding: 5px 10px;
-      border: 1px solid #dfcfac;
-      border-radius: 99px;
-      color: #684a22;
-      background: #f9f0d9;
-      font-size: 11px;
-    }
-
-    .active-filter[hidden] { display: none; }
-    .active-filter button { border: 0; background: transparent; cursor: pointer; }
-
-    .catalog-grid {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 19px;
-    }
-
-    .product-card {
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
-      min-width: 0;
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      background: var(--paper);
-      box-shadow: 0 5px 18px #2019120b;
-      transition: transform .2s, box-shadow .2s, border-color .2s;
-    }
-
-    .product-card:hover {
-      transform: translateY(-4px);
-      border-color: #c9ac6b;
-      box-shadow: 0 15px 30px #20191219;
-    }
-
-    .card-image {
-      display: grid;
-      place-items: center;
-      height: 200px;
-      overflow: hidden;
-      color: #8a7754;
-      background: #e7ddcb;
-      font: 22px "Cormorant Garamond", serif;
-    }
-
-    .card-image img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-
-    .card-body {
-      display: flex;
-      flex: 1;
-      flex-direction: column;
-      padding: 16px;
-    }
-
-    .card-category {
-      margin-bottom: 5px;
-      color: #8b6630;
-      font-size: 9px;
-      font-weight: 700;
-      letter-spacing: 1.5px;
-      text-transform: uppercase;
-    }
-
-    .card-title {
-      margin: 0 0 7px;
-      color: var(--navy);
-      font: 600 24px/1.1 "Cormorant Garamond", serif;
-    }
-
-    .card-description { flex: 1; margin: 0 0 16px; color: var(--muted); font-size: 12px; }
-
-    .card-footer {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 10px;
-      padding-top: 12px;
-      border-top: 1px solid #e9dfcf;
-    }
-
-    .card-price { color: var(--burgundy); font-size: 14px; font-weight: 700; }
-
-    .inquire-btn {
-      padding: 7px 11px;
-      border: 1px solid var(--burgundy);
-      border-radius: 6px;
-      color: var(--burgundy);
-      font-size: 11px;
-      font-weight: 700;
-      text-decoration: none;
-    }
-
-    .inquire-btn:hover { color: white; background: var(--burgundy); }
-
-    .status-msg {
-      grid-column: 1 / -1;
-      padding: 35px 20px;
-      border: 1px dashed #d8c9af;
-      border-radius: 10px;
-      color: var(--muted);
-      background: #fffaf099;
-      text-align: center;
-    }
-
-    .contact-panel {
-      display: grid;
-      grid-template-columns: 1.4fr 1fr;
-      align-items: center;
-      gap: 25px;
-      margin-top: 45px;
-      padding: 28px;
-      border-radius: 13px;
-      color: #f9f2e4;
-      background: var(--burgundy);
-    }
-
-    .contact-panel h2 {
-      margin: 5px 0 8px;
-      font: 600 33px/1.1 "Cormorant Garamond", serif;
-    }
-
-    .contact-panel p { margin: 0; color: #e2d5d5; font-size: 12px; }
-    .contact-action { justify-self: end; }
-
-    footer {
-      display: flex;
-      justify-content: space-between;
-      gap: 12px;
-      margin-top: 25px;
-      padding-top: 17px;
-      border-top: 1px solid #dfd3c0;
-      color: #82796e;
-      font-size: 10px;
-    }
-
-    .scrim { display: none; }
-
-    @media (max-width: 1100px) {
-      .catalog-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-    }
-
-    @media (max-width: 760px) {
-      .sidebar { transform: translateX(-100%); width: 270px; }
-      .sidebar.open { transform: translateX(0); }
-
-      .scrim.show {
-        display: block;
-        position: fixed;
-        inset: 0;
-        z-index: 15;
-        background: #080c1690;
-      }
-
-      .main { margin-left: 0; }
-      .mobile-menu { display: inline-flex; align-items: center; gap: 7px; }
-      .topbar { padding: 12px 16px; }
-      .breadcrumbs { display: none; }
-      .top-links { gap: 12px; }
-      .top-links a { font-size: 11px; }
-      .content { padding: 20px 16px 40px; }
-      .hero { padding: 30px 23px; }
-      .hero::after { right: -4%; top: 8%; }
-      .hero p { max-width: 92%; }
-      .catalog-grid { gap: 12px; }
-      .card-image { height: 155px; }
-      .card-body { padding: 12px; }
-      .card-title { font-size: 21px; }
-      .card-description { font-size: 11px; }
-      .card-footer { align-items: flex-start; flex-direction: column; }
-      .inquire-btn { width: 100%; text-align: center; }
-      .contact-panel { grid-template-columns: 1fr; padding: 23px; }
-      .contact-action { justify-self: start; }
-    }
-
-    @media (max-width: 420px) {
-      .catalog-grid { grid-template-columns: 1fr; }
-      .card-image { height: 205px; }
-      .toolbar { flex-direction: column; }
-      .sort-select { width: 100%; }
-      .section-heading h2 { font-size: 30px; }
-      footer { flex-direction: column; }
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-      *, *::before, *::after {
-        scroll-behavior: auto !important;
-        transition: none !important;
-      }
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DeployLab</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg: #10142a;
+            --panel: #1b2147;
+            --panel-light: #242c5c;
+            --blue: #6fb6ff;
+            --blue-pastel: #a9d4ff;
+            --blue-deep: #3d6bd1;
+            --pink: #ff9ecb;
+            --mint: #7ef0c2;
+            --amber: #ffcf5c;
+            --red: #ff6b7a;
+            --tunic: #4f9d5e;
+            --skin: #ffd9a8;
+            --belt: #8a5a2b;
+            --boot: #3b2a1d;
+            --text: #e8edff;
+            --muted: #8894c9;
+            --pixel: 4px;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            font-family: 'IBM Plex Mono', monospace;
+            background: var(--bg);
+            color: var(--text);
+            image-rendering: pixelated;
+            position: relative;
+        }
+
+        /* scanline overlay */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 50;
+            background: repeating-linear-gradient(
+                0deg,
+                rgba(0,0,0,0.18) 0px,
+                rgba(0,0,0,0.18) 1px,
+                transparent 1px,
+                transparent 3px
+            );
+            opacity: 0.35;
+        }
+
+        /* pixel border utility: hard 4-step notched corners instead of rounding */
+        .pixel-border {
+            position: relative;
+            border: var(--pixel) solid var(--blue-deep);
+            box-shadow:
+                inset 0 0 0 var(--pixel) var(--panel),
+                0 var(--pixel) 0 0 #000000aa;
+        }
+        .pixel-border::before {
+            content: '';
+            position: absolute;
+            top: calc(var(--pixel) * -1);
+            left: calc(var(--pixel) * -1);
+            width: var(--pixel);
+            height: var(--pixel);
+            background: var(--bg);
+        }
+        .pixel-border::after {
+            content: '';
+            position: absolute;
+            top: calc(var(--pixel) * -1);
+            right: calc(var(--pixel) * -1);
+            width: var(--pixel);
+            height: var(--pixel);
+            background: var(--bg);
+        }
+
+        header {
+            background: var(--panel);
+            border-bottom: var(--pixel) solid var(--blue-deep);
+            padding: 28px 40px;
+            position: relative;
+        }
+        header::after {
+            content: '';
+            position: absolute;
+            left: 0; right: 0; bottom: calc(var(--pixel) * -2);
+            height: var(--pixel);
+            background: var(--panel-light);
+        }
+
+        .header-row {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .mascot {
+            position: relative;
+            width: 36px;
+            height: 52px;
+            flex-shrink: 0;
+            transform: scale(2.1);
+            transform-origin: left center;
+            margin-left: 14px;
+            animation: hover 2.4s ease-in-out infinite;
+        }
+        @keyframes hover {
+            0%, 100% { transform: scale(2.1) translateY(0); }
+            50% { transform: scale(2.1) translateY(-3px); }
+        }
+        .mascot .px {
+            position: absolute;
+            top: 0; left: 0;
+            width: 4px; height: 4px;
+            background: transparent;
+            box-shadow:
+                /* cap + tunic (green) */
+                16px 0px 0 0 var(--tunic),
+                12px 4px 0 0 var(--tunic), 16px 4px 0 0 var(--tunic), 20px 4px 0 0 var(--tunic),
+                8px 8px 0 0 var(--tunic), 12px 8px 0 0 var(--tunic), 16px 8px 0 0 var(--tunic), 20px 8px 0 0 var(--tunic), 24px 8px 0 0 var(--tunic),
+                8px 12px 0 0 var(--tunic), 24px 12px 0 0 var(--tunic),
+                8px 20px 0 0 var(--tunic), 12px 20px 0 0 var(--tunic), 16px 20px 0 0 var(--tunic), 20px 20px 0 0 var(--tunic), 24px 20px 0 0 var(--tunic),
+                4px 24px 0 0 var(--tunic), 8px 24px 0 0 var(--tunic), 12px 24px 0 0 var(--tunic), 16px 24px 0 0 var(--tunic), 20px 24px 0 0 var(--tunic), 24px 24px 0 0 var(--tunic), 28px 24px 0 0 var(--tunic),
+                4px 28px 0 0 var(--tunic), 8px 28px 0 0 var(--tunic), 12px 28px 0 0 var(--tunic), 16px 28px 0 0 var(--tunic), 20px 28px 0 0 var(--tunic), 24px 28px 0 0 var(--tunic), 28px 28px 0 0 var(--tunic),
+                /* face (skin) */
+                12px 12px 0 0 var(--skin), 16px 12px 0 0 var(--skin), 20px 12px 0 0 var(--skin),
+                16px 16px 0 0 var(--skin),
+                /* eyes */
+                12px 16px 0 0 var(--bg), 20px 16px 0 0 var(--bg),
+                /* belt */
+                4px 32px 0 0 var(--belt), 8px 32px 0 0 var(--belt), 12px 32px 0 0 var(--belt), 16px 32px 0 0 var(--belt), 20px 32px 0 0 var(--belt), 24px 32px 0 0 var(--belt), 28px 32px 0 0 var(--belt),
+                /* legs (skin) */
+                8px 36px 0 0 var(--skin), 12px 36px 0 0 var(--skin), 20px 36px 0 0 var(--skin), 24px 36px 0 0 var(--skin),
+                8px 40px 0 0 var(--skin), 12px 40px 0 0 var(--skin), 20px 40px 0 0 var(--skin), 24px 40px 0 0 var(--skin),
+                /* boots */
+                8px 44px 0 0 var(--boot), 12px 44px 0 0 var(--boot), 20px 44px 0 0 var(--boot), 24px 44px 0 0 var(--boot),
+                4px 48px 0 0 var(--boot), 8px 48px 0 0 var(--boot), 12px 48px 0 0 var(--boot), 20px 48px 0 0 var(--boot), 24px 48px 0 0 var(--boot), 28px 48px 0 0 var(--boot);
+        }
+
+        header h1 {
+            margin: 0 0 14px;
+            font-family: 'Press Start 2P', monospace;
+            font-size: 22px;
+            color: var(--blue);
+            text-shadow: 2px 2px 0 #000;
+            letter-spacing: 1px;
+        }
+
+        header p {
+            margin: 0;
+            color: var(--muted);
+            font-size: 12px;
+            letter-spacing: 0.5px;
+        }
+
+        header .blink {
+            display: inline-block;
+            width: 10px;
+            height: 14px;
+            background: var(--mint);
+            margin-left: 8px;
+            animation: blink 1s steps(1) infinite;
+            vertical-align: middle;
+        }
+        @keyframes blink { 50% { opacity: 0; } }
+
+        main {
+            max-width: 1100px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .section { margin-bottom: 40px; }
+
+        .section h2 {
+            font-family: 'Press Start 2P', monospace;
+            font-size: 13px;
+            margin-bottom: 18px;
+            color: var(--blue-pastel);
+            text-shadow: 1px 1px 0 #000;
+        }
+        .section h2::before { content: '>> '; color: var(--pink); }
+
+        .status-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        .card {
+            background: var(--panel);
+            padding: 18px 16px 20px;
+            position: relative;
+        }
+
+        .status-label {
+            color: var(--muted);
+            font-size: 10px;
+            margin-bottom: 10px;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .status-value {
+            font-family: 'Press Start 2P', monospace;
+            font-size: 13px;
+            line-height: 1.5;
+            text-transform: uppercase;
+        }
+
+        .online {
+            color: var(--mint);
+            text-shadow: 0 0 6px #7ef0c288;
+        }
+        .online::before { content: '\25A0  '; }
+
+        .error {
+            color: var(--red);
+            text-shadow: 0 0 6px #ff6b7a88;
+        }
+        .error::before { content: '\25A0  '; }
+
+        .loading {
+            color: var(--amber);
+        }
+        .loading::before { content: '\25A1  '; animation: blink 0.8s steps(1) infinite; }
+
+        .deployment {
+            border-bottom: var(--pixel) dashed var(--panel-light);
+            padding: 14px 4px;
+        }
+        .deployment:last-child { border-bottom: none; }
+
+        .deployment-version {
+            font-family: 'Press Start 2P', monospace;
+            font-size: 11px;
+            color: var(--blue-pastel);
+        }
+        .deployment-version::before { content: '\2726 '; color: var(--amber); }
+
+        .deployment-meta {
+            color: var(--muted);
+            font-size: 11px;
+            margin-top: 6px;
+        }
+
+        .success { color: var(--mint); }
+        .error-text { color: var(--red); }
+
+        footer {
+            text-align: center;
+            padding: 30px;
+            color: var(--muted);
+            font-size: 10px;
+            letter-spacing: 1px;
+            border-top: var(--pixel) solid var(--panel-light);
+            margin-top: 30px;
+        }
+
+        .readme-card p {
+            font-size: 12px;
+            line-height: 1.7;
+            color: var(--text);
+            margin: 0 0 16px;
+        }
+        .readme-card p:last-of-type { margin-bottom: 0; }
+        .readme-card code {
+            font-family: 'IBM Plex Mono', monospace;
+            background: #000000aa;
+            color: var(--mint);
+            padding: 2px 5px;
+            font-size: 11px;
+        }
+        .rk {
+            font-family: 'Press Start 2P', monospace;
+            font-size: 10px;
+            color: var(--amber);
+            display: block;
+            margin-bottom: 8px;
+        }
+        .rv { color: var(--blue-pastel); }
+        .rsrc {
+            font-size: 10px !important;
+            color: var(--muted) !important;
+            border-top: 1px dashed var(--panel-light);
+            padding-top: 12px;
+        }
+
+        @media (max-width: 800px) {
+            .status-grid, .info-grid { grid-template-columns: 1fr 1fr; }
+        }
+
+        @media (max-width: 500px) {
+            .status-grid, .info-grid { grid-template-columns: 1fr; }
+            header { padding: 20px; }
+            header h1 { font-size: 16px; }
+        }
+    </style>
 </head>
 
 <body>
-  <aside class="sidebar" id="sidebar" aria-label="Main navigation">
-    <a class="brand" href="#home">
-      <span class="brand-mark">Z</span>
-      <span>
-        <span class="brand-name">Zolis Digital Print</span>
-        <span class="brand-sub">Digital Printing Solutions</span>
-      </span>
-    </a>
 
-    <div class="nav-label">Explore</div>
-    <a class="nav-link active" href="#home"><span class="nav-icon">✧</span> Home</a>
-    <a class="nav-link" href="#catalog"><span class="nav-icon">▤</span> All Catalog</a>
+<header>
+    <h1>DEPLOYLAB<span class="blink"></span></h1>
+    <p>&gt; A hands-on DevOps deployment lab_</p>
+</header>
 
-    <button class="accordion-toggle" id="categoryToggle" aria-expanded="true" aria-controls="categoryList">
-      <span class="nav-icon">✦</span>
-      Browse categories
-      <span class="chevron">⌄</span>
-    </button>
+<main>
 
-    <div class="category-list" id="categoryList">
-      <button class="category-button selected" type="button" data-category="all">All treasures</button>
-      <div id="categoryOptions"></div>
-    </div>
+    <section class="section">
+        <h2>ENVIRONMENT STATUS</h2>
 
-    <a class="nav-link" href="#contact"><span class="nav-icon">✉</span> Contact us</a>
+        <div class="status-grid">
 
-    <div class="sidebar-bottom">
-      <div class="sidebar-quote">“It is our choices that show what we truly are.”</div>
-      <div class="sidebar-caption">A LITTLE MAGIC IN EVERY DETAIL</div>
-    </div>
-  </aside>
+            <div class="card pixel-border">
+                <div class="status-label">Application</div>
+                <div id="application-status" class="status-value loading">
+                    CHECKING...
+                </div>
+            </div>
 
-  <div class="scrim" id="scrim"></div>
+            <div class="card pixel-border">
+                <div class="status-label">API</div>
+                <div id="api-status" class="status-value loading">
+                    CHECKING...
+                </div>
+            </div>
 
-  <main class="main" id="home">
-    <header class="topbar">
-      <button class="mobile-menu" id="menuToggle" aria-expanded="false" aria-controls="sidebar">☰ Menu</button>
-      <div class="breadcrumbs">Zolis Digital Print / <strong id="breadcrumbCurrent">Home</strong></div>
-      <nav class="top-links" aria-label="Quick links">
-        <a href="#catalog">Catalog</a>
-        <a href="#contact">Contact</a>
-      </nav>
-    </header>
+            <div class="card pixel-border">
+                <div class="status-label">Database</div>
+                <div id="database-status" class="status-value loading">
+                    CHECKING...
+                </div>
+            </div>
 
-    <div class="content">
-      <section class="hero">
-        <div class="eyebrow">A curious little collection</div>
-        <h1>Find something<br>extraordinary.</h1>
-        <p>Discover a curated selection of digital prints and stationery that bring creativity to life.</p>
-        <div class="hero-actions">
-          <a class="button button-primary" href="#catalog">Explore the catalog ↗</a>
-          <a class="button button-secondary" href="#contact">Ask us a question</a>
+            <div class="card pixel-border">
+                <div class="status-label">Environment</div>
+                <div id="environment-status" class="status-value loading">
+                    CHECKING...
+                </div>
+            </div>
+
         </div>
-      </section>
+    </section>
 
-      <section id="catalog" aria-labelledby="catalogTitle">
-        <div class="section-heading">
-          <div>
-            <h2 id="catalogTitle">The collection</h2>
-            <p>Every item has a story. Find the one that speaks to you.</p>
-          </div>
-          <div class="results-count" id="resultsCount" aria-live="polite">Loading…</div>
+
+    <section class="section">
+        <h2>DEPLOYMENT INFO</h2>
+
+        <div class="info-grid">
+
+            <div class="card pixel-border">
+                <div class="status-label">Version</div>
+                <div id="version" class="status-value">LOADING...</div>
+            </div>
+
+            <div class="card pixel-border">
+                <div class="status-label">Platform</div>
+                <div id="platform" class="status-value">LOADING...</div>
+            </div>
+
+            <div class="card pixel-border">
+                <div class="status-label">Runtime</div>
+                <div id="runtime" class="status-value">LOADING...</div>
+            </div>
+
+            <div class="card pixel-border">
+                <div class="status-label">Application</div>
+                <div id="application-info" class="status-value">LOADING...</div>
+            </div>
+
         </div>
+    </section>
 
-        <div class="toolbar">
-          <label class="search-wrap">
-            <span>⌕</span>
-            <input class="search-input" id="searchInput" type="search" placeholder="Search the collection…" aria-label="Search catalog">
-          </label>
-          <select class="sort-select" id="sortSelect" aria-label="Sort catalog">
-            <option value="featured">Sort: Featured</option>
-            <option value="title-asc">Name: A to Z</option>
-            <option value="price-asc">Price: Low to high</option>
-            <option value="price-desc">Price: High to low</option>
-          </select>
+
+    <section class="section">
+        <h2>RECENT DEPLOYMENTS</h2>
+
+        <div id="deployments" class="card pixel-border">
+            <div class="loading">LOADING DEPLOYMENT HISTORY...</div>
         </div>
+    </section>
 
-        <div class="active-filter" id="activeFilter" hidden>
-          <span id="activeFilterLabel"></span>
-          <button id="clearFilter" type="button" aria-label="Clear category filter">×</button>
+    <section class="section">
+        <h2>WHAT AM I LOOKING AT?</h2>
+
+        <div class="card pixel-border readme-card">
+            <p><span class="rk">ENVIRONMENT STATUS</span> — four live checks, not static labels. <span class="rv">Application</span> and <span class="rv">API</span> confirm the FastAPI service is up and answering requests; <span class="rv">Database</span> reflects a real query (<code>SELECT 1</code>) run against Postgres on every page load, so if the DB container is down this turns red instead of silently showing green; <span class="rv">Environment</span> is read from a <code>DEPLOY_ENVIRONMENT</code> variable set at deploy time.</p>
+
+            <p><span class="rk">DEPLOYMENT INFO</span> — version, platform and runtime are also environment-driven (<code>DEPLOY_VERSION</code>, <code>DEPLOY_PLATFORM</code>), not hardcoded strings, so the same image reports correctly whether it's run locally or from the Terraform-provisioned Azure VM.</p>
+
+            <p><span class="rk">RECENT DEPLOYMENTS</span> — every container start writes a row to a <code>deployments</code> table via a FastAPI startup hook. This panel is reading that table live, so each redeploy actually appends a new entry rather than the list being seeded fake data.</p>
+
+            <p class="rsrc">Source: <code>GET /api/status</code> · <code>/api/info</code> · <code>/api/deployments</code> — all three defined in <code>backend/app/main.py</code>.</p>
         </div>
+    </section>
 
-        <div class="catalog-grid" id="catalog-grid">
-          <div class="status-msg">Opening the catalog…</div>
-        </div>
-      </section>
+</main>
 
 
-<section id="contact" aria-labelledby="contact-heading"
-  style="padding: 48px 24px; background: #fffaf0; color: #252a35; border-radius: 12px; margin: 32px 0;">
-  <p style="color: #77716a; letter-spacing: 2px; text-transform: uppercase;">
-    Get in touch
-  </p>
+<footer>
+    DEPLOYLAB · DOCKER · FASTAPI · POSTGRESQL · AZURE · TERRAFORM · JENKINS
+</footer>
 
-  <h2 id="contact-heading" style="color: #111a2e;">
-    Contact Zolis Digital Print
-  </h2>
 
-  <p>
-    Looking for wedding invitations, stickers, laser printing, or custom
-    print work? Contact us to discuss your requirements and get a quote.
-  </p>
+<script src="app.js"></script>
 
-  <div style="display: grid; gap: 18px; margin-top: 24px;">
-    <div>
-      <strong>Phone</strong>
-      <p>+91 00000 00000 (placeholder)</p>
-    </div>
-
-    <div>
-      <strong>WhatsApp</strong>
-      <p>Message us about a product or request a quote.</p>
-      <a href="https://wa.me/910000000000"
-         target="_blank"
-         rel="noopener noreferrer">
-        Contact us on WhatsApp
-      </a>
-      <p style="font-size: 12px; color: #77716a;">
-        Placeholder link — replace it with your real business WhatsApp number.
-      </p>
-    </div>
-
-    <div>
-      <strong>Address</strong>
-      <p>Replace with your shop address and locality.</p>
-    </div>
-
-    <div>
-      <strong>Opening hours</strong>
-      <p>Monday–Saturday: 9:00 AM–6:00 PM (placeholder)</p>
-    </div>
-  </div>
-</section>
-
-      <footer>
-        <span>© <span id="year"></span> Cozy Corner. Made with care.</span>
-        <span>A warm welcome, a touch of wonder.</span>
-      </footer>
-    </div>
-  </main>
-
-  <script src="app.js"></script>
 </body>
 </html>

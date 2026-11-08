@@ -1,34 +1,76 @@
 pipeline {
     agent any
 
+    environment {
+        COMPOSE_PROJECT_NAME = 'deploylab-ci'
+        COMPOSE_FILE = 'docker-compose.yml'
+    }
+
     stages {
-        stage('Checkout Code') {
+
+        stage('Checkout') {
             steps {
-                echo 'Using the project files available to Jenkins workspace'
+                checkout scm
             }
         }
 
-        stage('Build & Start Staging Environment') {
+        stage('Validate') {
             steps {
-                echo 'Building and starting application containers...'
-                sh 'docker compose -p cozy-catalog up -d --build --force-recreate --remove-orphans db backend frontend'
+                sh '''
+                    docker compose -f "$COMPOSE_FILE" config --quiet
+                '''
             }
         }
 
-        stage('Backend Unit Tests') {
+        stage('Build') {
             steps {
-                echo 'Running Python unit tests inside backend container...'
-                sh 'docker exec cozy_backend python -m unittest discover -s app'
+                sh '''
+                    docker compose -f "$COMPOSE_FILE" build
+                '''
+            }
+        }
+
+        stage('Start Test Environment') {
+            steps {
+                sh '''
+                    docker compose -f "$COMPOSE_FILE" up -d
+                '''
+            }
+        }
+
+        stage('API Smoke Test') {
+            steps {
+                sh '''
+                    sleep 10
+
+                    docker compose -f "$COMPOSE_FILE" ps
+
+                    docker compose -f "$COMPOSE_FILE" exec -T backend \
+                        python -c "import urllib.request; print(urllib.request.urlopen('http://localhost:8000/api/health').read().decode())"
+
+                    docker compose -f "$COMPOSE_FILE" exec -T backend \
+                        python -c "import urllib.request; print(urllib.request.urlopen('http://localhost:8000/api/status').read().decode())"
+
+                    docker compose -f "$COMPOSE_FILE" exec -T backend \
+                        python -c "import urllib.request; print(urllib.request.urlopen('http://localhost:8000/api/info').read().decode())"
+                '''
             }
         }
     }
 
     post {
-        success {
-            echo 'Pipeline executed successfully! Staging environment is live and tested.'
+        always {
+            sh '''
+                docker compose -f "$COMPOSE_FILE" down -v --remove-orphans || true
+            '''
         }
+
+        success {
+            echo 'DeployLab CI pipeline completed successfully.'
+        }
+
         failure {
-            echo 'Pipeline failed. Check build or test logs.'
+            echo 'DeployLab CI pipeline failed. Check the stage logs.'
         }
     }
 }

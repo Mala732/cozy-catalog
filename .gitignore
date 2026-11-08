@@ -7,3 +7,25 @@ __pycache__/
 .terraform/
 *.tfstate
 *.tfstate.backup
+
+jesnkinspass
+
+
+
+# Local secrets
+.env
+.env.*
+!.env.example
+*.backup
+
+# Uploaded product images
+backend/uploads/
+
+
+# Terraform
+terraform/.terraform/
+terraform/*.tfstate
+terraform/*.tfstate.*
+terraform/*.tfvars
+terraform/*.tfvars.json
+terraform/.terraform.tfstate.lock.info
