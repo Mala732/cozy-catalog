@@ -4,6 +4,10 @@ pipeline {
     environment {
         COMPOSE_PROJECT_NAME = 'deploylab-ci'
         COMPOSE_FILE = 'docker-compose.yml'
+
+        POSTGRES_USER = 'deploylab_ci'
+        POSTGRES_PASSWORD = 'ci-test-password'
+        POSTGRES_DB = 'deploylab_ci'
     }
 
     stages {
