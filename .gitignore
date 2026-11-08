@@ -29,3 +29,4 @@ terraform/*.tfstate.*
 terraform/*.tfvars
 terraform/*.tfvars.json
 terraform/.terraform.tfstate.lock.info
+jenkins-home-backup.tar.gz
