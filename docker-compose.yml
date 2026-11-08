@@ -2,7 +2,6 @@ services:
 
   db:
     image: postgres:15-alpine
-    container_name: deploylab_db
     restart: unless-stopped
 
     environment:
@@ -26,7 +25,6 @@ services:
 
   backend:
     build: ./backend
-    container_name: deploylab_backend
     restart: unless-stopped
 
     environment:
@@ -42,7 +40,6 @@ services:
 
   frontend:
     build: ./frontend
-    container_name: deploylab_frontend
     restart: unless-stopped
 
     ports:
