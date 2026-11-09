@@ -1,0 +1,96 @@
+pipeline {
+    agent any
+
+    parameters {
+        string(
+            name: 'ADMIN_SOURCE_IP',
+            defaultValue: '',
+            description: 'Same public IPv4 CIDR used during deployment, e.g. 203.0.113.10/32'
+        )
+    }
+
+    stages {
+
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
+
+        stage('Terraform Init') {
+            steps {
+                sh '''
+                    terraform -chdir=terraform init \
+                        -reconfigure \
+                        -backend-config="path=/var/jenkins_home/deploylab-state/terraform.tfstate"
+                '''
+            }
+        }
+
+        stage('Check Terraform State') {
+            steps {
+                sh '''
+                    test -f /var/jenkins_home/deploylab-state/terraform.tfstate || {
+                        echo "No DeployLab Terraform state was found."
+                        exit 1
+                    }
+
+                    echo "DeployLab Terraform state found."
+                    echo ""
+                    echo "Resources currently managed by DeployLab:"
+                    terraform -chdir=terraform state list
+                '''
+            }
+        }
+
+        stage('Destroy Azure Resources') {
+            input {
+                message 'DESTROY ALL DEPLOYLAB AZURE RESOURCES?'
+                ok 'Yes, Destroy Everything'
+            }
+
+            steps {
+                withCredentials([
+                    usernamePassword(
+                        credentialsId: 'deploylab-azure-sp',
+                        usernameVariable: 'ARM_CLIENT_ID',
+                        passwordVariable: 'ARM_CLIENT_SECRET'
+                    ),
+                    string(
+                        credentialsId: 'deploylab-azure-tenant-id',
+                        variable: 'ARM_TENANT_ID'
+                    ),
+                    string(
+                        credentialsId: 'deploylab-azure-subscription-id',
+                        variable: 'ARM_SUBSCRIPTION_ID'
+                    ),
+                    string(
+                        credentialsId: 'deploylab-ssh-public-key',
+                        variable: 'TF_VAR_ssh_public_key'
+                    )
+                ]) {
+                    sh '''
+                        test -n "$ADMIN_SOURCE_IP" || {
+                            echo "ADMIN_SOURCE_IP is required."
+                            exit 1
+                        }
+
+                        TF_VAR_admin_source_ip="$ADMIN_SOURCE_IP" \
+                        terraform -chdir=terraform destroy \
+                            -auto-approve
+                    '''
+                }
+            }
+        }
+    }
+
+    post {
+        success {
+            echo 'DeployLab Azure resources destroyed successfully.'
+        }
+
+        failure {
+            echo 'Destroy failed. Check the Terraform output carefully.'
+        }
+    }
+}
