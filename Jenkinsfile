@@ -112,6 +112,64 @@ pipeline {
                 }
             }
         }
+
+        stage('Terraform Apply') {
+    input {
+        message 'Apply this Terraform plan to Azure and create the DeployLab environment?'
+        ok 'Apply to Azure'
+            }
+
+            steps {
+                withCredentials([
+                    usernamePassword(
+                        credentialsId: 'deploylab-azure-sp',
+                        usernameVariable: 'ARM_CLIENT_ID',
+                        passwordVariable: 'ARM_CLIENT_SECRET'
+                    ),
+                    string(
+                        credentialsId: 'deploylab-azure-tenant-id',
+                        variable: 'ARM_TENANT_ID'
+                    ),
+                    string(
+                        credentialsId: 'deploylab-azure-subscription-id',
+                        variable: 'ARM_SUBSCRIPTION_ID'
+                    )
+                ]) {
+                    sh '''
+                        test -f terraform/deploylab.tfplan || {
+                            echo "Terraform plan file is missing."
+                            exit 1
+                        }
+
+                        terraform -chdir=terraform apply \
+                            -auto-approve \
+                            deploylab.tfplan
+                    '''
+                }
+            }
+        }
+
+        stage('Show Deployment Endpoint') {
+            steps {
+                sh '''
+                    VM_IP=$(terraform -chdir=terraform output -raw public_ip_address)
+
+                    test -n "$VM_IP" || {
+                        echo "Terraform did not return a public IP."
+                        exit 1
+                    }
+
+                    echo ""
+                    echo "========================================="
+                    echo "DeployLab Azure VM created"
+                    echo "========================================="
+                    echo "Public IP: $VM_IP"
+                    echo "URL:       http://$VM_IP"
+                    echo "========================================="
+                    echo ""
+                '''
+            }
+        }
     }
 
     post {
