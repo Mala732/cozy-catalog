@@ -27,9 +27,10 @@ variable "admin_source_ip" {
   type        = string
 }
 
-variable "ssh_public_key_path" {
-  description = "Local path to the SSH public key used for VM access"
+variable "ssh_public_key" {
+  description = "SSH public key used to access the DeployLab VM"
   type        = string
+  sensitive   = true
 }
 
 variable "os_publisher" {
