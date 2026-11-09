@@ -60,6 +60,21 @@ pipeline {
                 '''
             }
         }
+        stage('Terraform Init') {
+            steps {
+                sh '''
+                    terraform -chdir=terraform init -backend=false
+                '''
+            }
+        }
+
+        stage('Terraform Validate') {
+            steps {
+                sh '''
+                    terraform -chdir=terraform validate
+                '''
+            }
+        }
     }
 
     post {
