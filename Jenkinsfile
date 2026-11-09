@@ -170,6 +170,36 @@ pipeline {
                 '''
             }
         }
+
+        stage('Test Azure SSH') {
+            steps {
+                withCredentials([
+                    sshUserPrivateKey(
+                        credentialsId: 'deploylab-ssh-private-key',
+                        keyFileVariable: 'SSH_KEY',
+                        usernameVariable: 'SSH_USER'
+                    )
+                ]) {
+                    sh '''
+                        VM_IP=$(terraform -chdir=terraform output -raw public_ip_address)
+
+                        test -n "$VM_IP" || {
+                            echo "Terraform did not return a public IP."
+                            exit 1
+                        }
+
+                        echo "Testing SSH connectivity to $VM_IP..."
+
+                        ssh \
+                            -i "$SSH_KEY" \
+                            -o StrictHostKeyChecking=no \
+                            -o ConnectTimeout=15 \
+                            "$SSH_USER@$VM_IP" \
+                            'echo "SSH connection successful"; hostname; uname -a'
+                    '''
+                }
+            }
+        }
     }
 
     post {
