@@ -71,7 +71,8 @@ pipeline {
         stage('Terraform Init') {
             steps {
                 sh '''
-                    terraform -chdir=terraform init -backend=false
+                    terraform -chdir=terraform init \
+                        -backend-config="path=/var/jenkins_home/deploylab-state/terraform.tfstate"
                 '''
             }
         }
