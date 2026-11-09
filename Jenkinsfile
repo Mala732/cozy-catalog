@@ -23,6 +23,15 @@ pipeline {
         stage('Checkout') {
             steps {
                 checkout scm
+
+                script {
+                    env.DEPLOY_VERSION = sh(
+                        returnStdout: true,
+                        script: 'git rev-parse --short HEAD'
+                    ).trim()
+
+                    echo "Deploy version: ${env.DEPLOY_VERSION}"
+                }
             }
         }
 
@@ -68,6 +77,41 @@ pipeline {
                 '''
             }
         }
+
+        stage('Publish Images') {
+            steps {
+                withCredentials([
+                    usernamePassword(
+                        credentialsId: 'deploylab-dockerhub',
+                        usernameVariable: 'DOCKERHUB_USER',
+                        passwordVariable: 'DOCKERHUB_TOKEN'
+                    )
+                ]) {
+                    sh '''
+                        echo "$DOCKERHUB_TOKEN" | docker login \
+                            -u "$DOCKERHUB_USER" \
+                            --password-stdin
+
+                        docker tag \
+                            "${COMPOSE_PROJECT_NAME}-backend" \
+                            "${DOCKERHUB_USER}/deploylab-backend:${DEPLOY_VERSION}"
+
+                        docker tag \
+                            "${COMPOSE_PROJECT_NAME}-frontend" \
+                            "${DOCKERHUB_USER}/deploylab-frontend:${DEPLOY_VERSION}"
+
+                        docker push \
+                            "${DOCKERHUB_USER}/deploylab-backend:${DEPLOY_VERSION}"
+
+                        docker push \
+                            "${DOCKERHUB_USER}/deploylab-frontend:${DEPLOY_VERSION}"
+
+                        docker logout
+                    '''
+                }
+            }
+        }
+
         stage('Terraform Init') {
             steps {
                 sh '''
@@ -196,6 +240,40 @@ pipeline {
                             -o ConnectTimeout=15 \
                             "$SSH_USER@$VM_IP" \
                             'echo "SSH connection successful"; hostname; uname -a'
+                    '''
+                }
+            }
+        }
+
+        stage('Publish Images') {
+            steps {
+                withCredentials([
+                    usernamePassword(
+                        credentialsId: 'deploylab-dockerhub',
+                        usernameVariable: 'DOCKERHUB_USER',
+                        passwordVariable: 'DOCKERHUB_TOKEN'
+                    )
+                ]) {
+                    sh '''
+                        echo "$DOCKERHUB_TOKEN" | docker login \
+                            -u "$DOCKERHUB_USER" \
+                            --password-stdin
+
+                        docker tag \
+                            "${COMPOSE_PROJECT_NAME}-backend" \
+                            "${DOCKERHUB_USERNAME}/deploylab-backend:${DEPLOY_VERSION}"
+
+                        docker tag \
+                            "${COMPOSE_PROJECT_NAME}-frontend" \
+                            "${DOCKERHUB_USERNAME}/deploylab-frontend:${DEPLOY_VERSION}"
+
+                        docker push \
+                            "${DOCKERHUB_USERNAME}/deploylab-backend:${DEPLOY_VERSION}"
+
+                        docker push \
+                            "${DOCKERHUB_USERNAME}/deploylab-frontend:${DEPLOY_VERSION}"
+
+                        docker logout
                     '''
                 }
             }
