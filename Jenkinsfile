@@ -1,6 +1,14 @@
 pipeline {
     agent any
 
+    parameters {
+        string(
+            name: 'ADMIN_SOURCE_IP',
+            defaultValue: '',
+            description: 'Public IPv4 address allowed to SSH into the Azure VM, in CIDR format, e.g. 203.0.113.10/32'
+        )
+    }
+
     environment {
         COMPOSE_PROJECT_NAME = 'deploylab-ci'
         COMPOSE_FILE = 'docker-compose.yml'
@@ -73,6 +81,34 @@ pipeline {
                 sh '''
                     terraform -chdir=terraform validate
                 '''
+            }
+        }
+        stage('Terraform Plan') {
+            steps {
+                withCredentials([
+                    usernamePassword(
+                        credentialsId: 'deploylab-azure-sp',
+                        usernameVariable: 'ARM_CLIENT_ID',
+                        passwordVariable: 'ARM_CLIENT_SECRET'
+                    ),
+                        string(
+                        credentialsId: 'deploylab-azure-tenant-id',
+                        variable: 'ARM_TENANT_ID'
+                    ),
+                    string(
+                        credentialsId: 'deploylab-azure-subscription-id',
+                        variable: 'ARM_SUBSCRIPTION_ID'
+                    ),
+                    string(
+                        credentialsId: 'deploylab-ssh-public-key',
+                        variable: 'TF_VAR_ssh_public_key'
+                    )
+                ]) {
+                    sh '''
+                        TF_VAR_admin_source_ip="$ADMIN_SOURCE_IP" \
+                        terraform -chdir=terraform plan -out=deploylab.tfplan
+                    '''
+                }
             }
         }
     }
