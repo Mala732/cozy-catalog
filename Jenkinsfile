@@ -244,40 +244,6 @@ pipeline {
                 }
             }
         }
-
-        stage('Publish Images') {
-            steps {
-                withCredentials([
-                    usernamePassword(
-                        credentialsId: 'deploylab-dockerhub',
-                        usernameVariable: 'DOCKERHUB_USER',
-                        passwordVariable: 'DOCKERHUB_TOKEN'
-                    )
-                ]) {
-                    sh '''
-                        echo "$DOCKERHUB_TOKEN" | docker login \
-                            -u "$DOCKERHUB_USER" \
-                            --password-stdin
-
-                        docker tag \
-                            "${COMPOSE_PROJECT_NAME}-backend" \
-                            "${DOCKERHUB_USERNAME}/deploylab-backend:${DEPLOY_VERSION}"
-
-                        docker tag \
-                            "${COMPOSE_PROJECT_NAME}-frontend" \
-                            "${DOCKERHUB_USERNAME}/deploylab-frontend:${DEPLOY_VERSION}"
-
-                        docker push \
-                            "${DOCKERHUB_USERNAME}/deploylab-backend:${DEPLOY_VERSION}"
-
-                        docker push \
-                            "${DOCKERHUB_USERNAME}/deploylab-frontend:${DEPLOY_VERSION}"
-
-                        docker logout
-                    '''
-                }
-            }
-        }
     }
 
     post {
